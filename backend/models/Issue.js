@@ -42,6 +42,20 @@ const IssueSchema = new mongoose.Schema({
     default: "open",
   },
 
+  aiAnalysis: {
+    category: String,
+    urgency: {
+      type: String,
+      enum: ["low", "medium", "high", "critical"],
+    },
+    summary: String,
+    sentimentScore: Number,
+  },
+
+  priorityScore: {
+    type: Number,
+    default: 0,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

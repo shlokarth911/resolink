@@ -56,6 +56,28 @@ const IssueSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+
+  isDuplicate: {
+    type: Boolean,
+    default: false,
+  },
+
+  duplicateOf: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Issue",
+  },
+
+  duplicateConfidence: {
+    type: Number, // 0 to 1
+  },
+
+  aiSolutions: {
+    immediateActions: [String],
+    longTermActions: [String],
+    responsibleEntity: String,
+    estimatedResolutionTime: String,
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,

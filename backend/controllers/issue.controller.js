@@ -1,13 +1,54 @@
 const Issue = require("../models/Issue");
 const { createIssue } = require("../services/issue.service");
 const { analyzeIssue } = require("../utils/gemini");
+const { checkDuplicate } = require("../utils/geminiDuplicate");
+const { generateSolutions } = require("../utils/geminiSolutions");
 
 module.exports.createIssue = async (req, res) => {
   try {
     const { title, description, category, organisationId, isAnonymous } =
       req.body;
 
+    // 1️⃣ Fetch recent issues of same organisation
+    const recentIssues = await Issue.find({
+      organisation: organisationId,
+    })
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    // 2️⃣ Ask Gemini if duplicate
+    const duplicateResult = await checkDuplicate(
+      { title, description },
+      recentIssues
+    );
+
+    // 3️⃣ If duplicate → link instead of create new root issue
+    if (duplicateResult.isDuplicate && duplicateResult.confidence > 0.7) {
+      const originalIssue = await Issue.findById(
+        duplicateResult.duplicateIssueId
+      );
+
+      if (originalIssue) {
+        originalIssue.votes += 1;
+        originalIssue.priorityScore += 1;
+        await originalIssue.save();
+
+        return res.status(200).json({
+          message: "Duplicate issue detected",
+          duplicateOf: originalIssue._id,
+          confidence: duplicateResult.confidence,
+        });
+      }
+    }
+
+    // 4️⃣ If not duplicate → AI Analysis & Creation
     const aiData = await analyzeIssue(title, description);
+
+    const aiSolutions = await generateSolutions({
+      title,
+      description,
+      aiAnalysis: aiData,
+    });
 
     const priorityMap = {
       low: 1,
@@ -24,6 +65,7 @@ module.exports.createIssue = async (req, res) => {
       postedBy: isAnonymous ? null : req.user.id,
       isAnonymous: isAnonymous || false,
       aiAnalysis: aiData,
+      aiSolutions,
       priorityScore: priorityMap[aiData.urgency] || 1,
     });
 
@@ -31,11 +73,8 @@ module.exports.createIssue = async (req, res) => {
       message: "Issue created successfully",
       issue,
     });
-  } catch (error) {
-    return res.status(500).json({
-      message: "Failed to create issue",
-      error: error.message,
-    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 

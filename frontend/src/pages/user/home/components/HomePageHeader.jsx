@@ -13,13 +13,13 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Sparkles } from "lucide-react";
 
-const HomePageHeader = () => {
+const HomePageHeader = ({ name }) => {
   return (
     <div>
       <div className="flex items-center justify-between">
         <div>
           <p>Welcome</p>
-          <h2 className="text-xl font-semibold">User Name</h2>
+          <h2 className="text-xl font-semibold">{name}</h2>
         </div>
 
         <div>
@@ -27,11 +27,10 @@ const HomePageHeader = () => {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Avatar size="lg">
-                  <AvatarImage
-                    src="https://github.com/shadcn.png"
-                    alt="shadcn"
-                  />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarImage src="" alt="shadcn" />
+                  <AvatarFallback>
+                    {name?.charAt(0).toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>

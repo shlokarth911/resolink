@@ -19,6 +19,7 @@ import { Switch } from "./ui/switch";
 import { registerUser } from "../services/auth";
 
 export function SignupForm({ className, ...props }) {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -34,15 +35,19 @@ export function SignupForm({ className, ...props }) {
     }
 
     const registrationData = {
+      name,
       email,
       password,
       isAnonymous,
     };
 
     try {
-      await registerUser(registrationData);
+      const res = await registerUser(registrationData);
 
-      if (isAnonymous) {
+      const token = res.data.token;
+      localStorage.setItem("user_token", token);
+
+      if (res) {
         toast.success("Anonymous registration successful");
       } else {
         toast.success("Registration successful");
@@ -67,6 +72,17 @@ export function SignupForm({ className, ...props }) {
               Already have an account? <Link to="/login">Sign in</Link>
             </FieldDescription>
           </div>
+          <Field>
+            <FieldLabel htmlFor="name">Name</FieldLabel>
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              id="name"
+              type="text"
+              placeholder="John Doe"
+              required
+            />
+          </Field>
           <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
             <Input

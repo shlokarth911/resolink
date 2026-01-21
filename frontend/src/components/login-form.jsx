@@ -11,47 +11,34 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import { useState } from "react";
-import { Label } from "./ui/label";
-import { Switch } from "./ui/switch";
+import { toast } from "sonner";
 
-import { registerUser } from "../services/auth";
+import { loginUser } from "../services/auth";
 
-export function SignupForm({ className, ...props }) {
+export function LoginForm({ className, ...props }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isAnonymous, setIsAnonymous] = useState(false);
 
   const navigate = useNavigate();
 
-  const submitHandler = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-
-    const registrationData = {
-      email,
-      password,
-      isAnonymous,
-    };
 
     try {
-      await registerUser(registrationData);
+      const loginData = {
+        email,
+        password,
+      };
 
-      if (isAnonymous) {
-        toast.success("Anonymous registration successful");
-      } else {
-        toast.success("Registration successful");
+      const res = await loginUser(loginData);
+
+      if (res.status === 200) {
+        toast.success("Login successful");
+        navigate("/user/home");
       }
-
-      navigate("/user/home");
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Registration failed";
+      const errorMessage = error.response?.data?.message || "Login failed";
       toast.error(errorMessage);
       console.error(error);
     }
@@ -59,73 +46,43 @@ export function SignupForm({ className, ...props }) {
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <form onSubmit={submitHandler}>
+      <form onSubmit={handleLogin}>
         <FieldGroup>
           <div className="flex flex-col items-center gap-2 text-center">
-            <h1 className="text-xl font-bold">Welcome to ResoLink </h1>
+            <Link
+              to="/"
+              className="flex flex-col items-center gap-2 font-medium"
+            >
+              <span className="sr-only">Resolink</span>
+            </Link>
+            <h1 className="text-xl font-bold">Welcome to ResoLink</h1>
             <FieldDescription>
-              Already have an account? <Link to="/login">Sign in</Link>
+              Don&apos;t have an account? <Link to="/register">Register</Link>
             </FieldDescription>
           </div>
           <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
             <Input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               id="email"
               type="email"
               placeholder="m@example.com"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </Field>
-          <div className="flex items-center justify-between gap-3">
-            <Field>
-              <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-                id="password"
-                type="password"
-                required
-              />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="confirm-password">
-                Confirm Password
-              </FieldLabel>
-              <Input
-                value={confirmPassword}
-                onChange={(e) => {
-                  setConfirmPassword(e.target.value);
-                }}
-                id="confirm-password"
-                type="password"
-                required
-              />
-            </Field>
-          </div>
-
-          <div className="flex items-center justify-between space-x-2">
-            <Label htmlFor="anonymous" className={"text-lg"}>
-              <div className="flex flex-col">
-                Keep me annonymous
-                <span className="text-sm text-muted-foreground underline cursor-pointer">
-                  Know more
-                </span>
-              </div>
-            </Label>
-            <Switch
-              checked={isAnonymous}
-              onCheckedChange={setIsAnonymous}
-              id="anonymous"
-              className={"scale-110"}
-            />
-          </div>
-
           <Field>
-            <Button type="submit">Create Account</Button>
+            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <Input
+              id="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Field>
+          <Field>
+            <Button type="submit">Login</Button>
           </Field>
           <FieldSeparator>Or</FieldSeparator>
           <Field className="grid gap-4 sm:grid-cols-2">

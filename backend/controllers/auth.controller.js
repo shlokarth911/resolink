@@ -32,12 +32,7 @@ module.exports.register = async (req, res) => {
 
     res.cookie("user_token", token);
 
-    const userData = user.toObject();
-    delete userData.password;
-
-    res
-      .status(200)
-      .json({ message: "Register Successful", token, user: userData });
+    res.status(200).json({ message: "Register Successful", token, user });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
@@ -76,7 +71,7 @@ module.exports.registerAnonymousUser = async (req, res) => {
     const token = jwt.sign(
       { id: anonymousUser._id, anonymous: true },
       process.env.JWT_SECRET,
-      { expiresIn: "24h" }
+      { expiresIn: "24h" },
     );
 
     res.json({

@@ -19,13 +19,13 @@ module.exports.createIssue = async (req, res) => {
     // 2️⃣ Ask Gemini if duplicate
     const duplicateResult = await checkDuplicate(
       { title, description },
-      recentIssues
+      recentIssues,
     );
 
     // 3️⃣ If duplicate → link instead of create new root issue
     if (duplicateResult.isDuplicate && duplicateResult.confidence > 0.7) {
       const originalIssue = await Issue.findById(
-        duplicateResult.duplicateIssueId
+        duplicateResult.duplicateIssueId,
       );
 
       if (originalIssue) {

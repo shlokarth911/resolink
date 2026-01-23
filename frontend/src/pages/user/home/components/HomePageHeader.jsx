@@ -37,10 +37,12 @@ const HomePageHeader = ({ name }) => {
             <DropdownMenuContent className="w-40 transform -translate-x-10">
               <DropdownMenuGroup>
                 <DropdownMenuItem className="cursor-pointer">
-                  <Link className="text-base">Profile</Link>
+                  <Link to="/user/profile" className="text-base w-full">
+                    Profile
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer">
-                  <Link className="text-base">Billing</Link>
+                  <Link className="text-base">Your Issues</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer">
                   <Link className="text-base">Settings</Link>

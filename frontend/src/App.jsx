@@ -5,6 +5,8 @@ import Register from "./pages/auth/Register";
 import UserProtectedWrapper from "./context/UserProtectedWrapper";
 import UserLayout from "./layouts/UserLayout";
 import UserHomePage from "./pages/user/home/UserHomePage";
+import UserProfilePage from "./pages/user/profile/UserProfilePage";
+import ReportIssue from "./pages/user/report/ReportIssue";
 
 const App = () => {
   return (
@@ -22,6 +24,8 @@ const App = () => {
         }
       >
         <Route path="home" element={<UserHomePage />} />
+        <Route path="profile" element={<UserProfilePage />} />
+        <Route path="report" element={<ReportIssue />} />
       </Route>
     </Routes>
   );

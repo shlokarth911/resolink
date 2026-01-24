@@ -15,3 +15,17 @@ export const createIssue = async (issueData) => {
     throw error;
   }
 };
+
+export const getUserIssues = async () => {
+  try {
+    const response = await axios.get(`${API_BASE}/api/issues`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching issues:", error);
+    throw error;
+  }
+};

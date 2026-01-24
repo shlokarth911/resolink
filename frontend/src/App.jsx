@@ -7,6 +7,7 @@ import UserLayout from "./layouts/UserLayout";
 import UserHomePage from "./pages/user/home/UserHomePage";
 import UserProfilePage from "./pages/user/profile/UserProfilePage";
 import ReportIssue from "./pages/user/report/ReportIssue";
+import UserIssues from "./pages/user/issues/UserIssues";
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="home" element={<UserHomePage />} />
         <Route path="profile" element={<UserProfilePage />} />
         <Route path="report" element={<ReportIssue />} />
+        <Route path="issues" element={<UserIssues />} />
       </Route>
     </Routes>
   );

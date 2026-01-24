@@ -12,7 +12,9 @@ const PrimaryCallToActions = () => {
       </Button>
 
       <Button className="text-base p-6 rounded-2xl" variant="outline">
-        Browse Issues
+        <Link to="/user/issues" className="w-full ">
+          Browse Issues
+        </Link>
       </Button>
     </div>
   );

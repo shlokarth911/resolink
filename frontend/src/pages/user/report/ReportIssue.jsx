@@ -4,6 +4,7 @@ import {
   ChevronsUpDown,
   Search,
   Building2,
+  ArrowLeft,
 } from "lucide-react";
 import React, { useState } from "react";
 import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
@@ -106,6 +107,13 @@ const ReportIssue = () => {
 
   return (
     <div className="p-5 max-w-4xl mx-auto">
+      <div>
+        <Button variant="ghost" onClick={() => navigate("/user/home")}>
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back
+        </Button>
+      </div>
+
       <div className="pt-6">
         <h1 className="text-3xl font-semibold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent inline-block">
           Report an Issue

@@ -18,7 +18,7 @@ export const createIssue = async (issueData) => {
 
 export const getUserIssues = async () => {
   try {
-    const response = await axios.get(`${API_BASE}/api/issues`, {
+    const response = await axios.get(`${API_BASE}/api/issues/user`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("user_token")}`,
       },

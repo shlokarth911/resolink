@@ -3,9 +3,23 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import IssueCard from "./components/IssueCard";
+import { getUserIssues } from "../../../services/issue";
+import { useEffect } from "react";
+import { useState } from "react";
 
 const UserIssues = () => {
+  const [issues, setIssues] = useState([]);
+
   const navigate = useNavigate();
+
+  const fetchIssues = async () => {
+    const issues = await getUserIssues();
+    setIssues(issues);
+  };
+
+  useEffect(() => {
+    fetchIssues();
+  }, []);
 
   return (
     <div className="p-5 max-w-4xl mx-auto">
@@ -26,7 +40,9 @@ const UserIssues = () => {
       </div>
 
       <div className="mt-5 flex flex-col gap-5">
-        <IssueCard />
+        {issues.map((issue) => (
+          <IssueCard key={issue._id} issue={issue} />
+        ))}
       </div>
     </div>
   );

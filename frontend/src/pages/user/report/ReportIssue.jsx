@@ -91,8 +91,8 @@ const ReportIssue = () => {
         organisationId: selectedOrg,
       };
 
-      const response = await createIssue(issueData);
       setIsPosting(true);
+      const response = await createIssue(issueData);
       toast.success("Issue reported successfully");
 
       if (response.status === 201) {
@@ -157,7 +157,6 @@ const ReportIssue = () => {
             className="text-base py-6 rounded-xl border-input/60 focus-visible:ring-blue-500/50 transition-all"
           />
         </Field>
-
         <Field className="gap-3">
           <FieldLabel htmlFor="description" className="text-base font-medium">
             Issue Description
@@ -171,7 +170,6 @@ const ReportIssue = () => {
             className="text-base py-4 min-h-[150px] rounded-xl border-input/60 focus-visible:ring-blue-500/50 transition-all resize-y"
           />
         </Field>
-
         <div className="space-y-3">
           <Label className="text-base font-medium">Organisation</Label>
           <Dialog open={open} onOpenChange={setOpen}>
@@ -248,7 +246,6 @@ const ReportIssue = () => {
           </p>
         </div>
 
-        {/* Location
         <Field className="gap-3">
           <FieldLabel htmlFor="location" className="text-base font-medium">
             Location
@@ -260,8 +257,7 @@ const ReportIssue = () => {
             required
             className="text-base py-6 rounded-xl border-input/60 focus-visible:ring-blue-500/50 transition-all"
           />
-        </Field> */}
-
+        </Field>
         {/* Attachments */}
         <Field className="gap-3">
           <FieldLabel htmlFor="attachments" className="text-base font-medium">
@@ -299,7 +295,6 @@ const ReportIssue = () => {
             </p>
           </div>
         </Field>
-
         {/* Switch */}
         <div className="flex items-center justify-between p-4 rounded-xl border bg-muted/30">
           <Label
@@ -320,7 +315,6 @@ const ReportIssue = () => {
             onCheckedChange={setAnonymous}
           />
         </div>
-
         <div className="pt-4">
           <Button
             className="w-full py-6 text-lg font-medium rounded-xl shadow-lg shadow-blue-500/20 transition-all hover:scale-[1.01] active:scale-[0.99]"

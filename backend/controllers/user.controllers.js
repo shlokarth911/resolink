@@ -1,4 +1,4 @@
-const { getProfile } = require("../services/user.services");
+const { getProfile } = require("../services/user.service");
 
 module.exports.getProfile = async (req, res) => {
   try {

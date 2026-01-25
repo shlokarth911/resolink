@@ -3,6 +3,7 @@ const { createIssue } = require("../services/issue.service");
 const { analyzeIssue } = require("../utils/gemini");
 const { checkDuplicate } = require("../utils/geminiDuplicate");
 const { generateSolutions } = require("../utils/geminiSolutions");
+const User = require("../models/User");
 
 module.exports.createIssue = async (req, res) => {
   try {
@@ -43,6 +44,7 @@ module.exports.createIssue = async (req, res) => {
 
     // 4️⃣ If not duplicate → AI Analysis & Creation
     const aiData = await analyzeIssue(title, description);
+    console.log("AI Analysis Result:", aiData);
 
     const aiSolutions = await generateSolutions({
       title,
@@ -62,7 +64,7 @@ module.exports.createIssue = async (req, res) => {
       description,
       category: aiData.category || category?.trim() || null,
       organisation: organisationId,
-      postedBy: isAnonymous ? null : req.user.id,
+      postedBy: req.user.id,
       isAnonymous: isAnonymous || false,
       aiAnalysis: aiData,
       aiSolutions,
@@ -84,8 +86,31 @@ module.exports.getIssues = async (req, res) => {
       .populate("organisation", "name type")
       .populate("postedBy", "name");
 
+    const sanitizedIssues = issues.map((issue) => {
+      const issueObj = issue.toObject();
+      if (issueObj.isAnonymous) {
+        issueObj.postedBy = null;
+      }
+      return issueObj;
+    });
+
+    res.json(sanitizedIssues);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports.getIssuesByUser = async (req, res) => {
+  try {
+    const issues = await Issue.find({
+      postedBy: req.user.id,
+    })
+      .sort({ votes: -1 })
+      .lean();
+
     res.json(issues);
   } catch (error) {
+    console.error("Error in getIssuesByUser:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -96,7 +121,15 @@ module.exports.getIssuesByOrganisation = async (req, res) => {
       organisation: req.params.id,
     }).sort({ votes: -1 });
 
-    res.json(issues);
+    const sanitizedIssues = issues.map((issue) => {
+      const issueObj = issue.toObject();
+      if (issueObj.isAnonymous) {
+        issueObj.postedBy = null;
+      }
+      return issueObj;
+    });
+
+    res.json(sanitizedIssues);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -109,5 +142,13 @@ module.exports.getSortedIssues = async (req, res) => {
     createdAt: -1,
   });
 
-  res.json(issues);
+  const sanitizedIssues = issues.map((issue) => {
+    const issueObj = issue.toObject();
+    if (issueObj.isAnonymous) {
+      issueObj.postedBy = null;
+    }
+    return issueObj;
+  });
+
+  res.json(sanitizedIssues);
 };

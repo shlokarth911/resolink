@@ -24,7 +24,7 @@ const UserHomePage = () => {
   }, []);
 
   return (
-    <div className="p-5">
+    <div className="p-5 max-w-4xl mx-auto space-y-8">
       <HomePageHeader name={name} />
       <PrimaryCallToActions />
       <RecentIssues />

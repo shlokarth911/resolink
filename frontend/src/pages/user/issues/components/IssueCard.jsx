@@ -81,7 +81,7 @@ const IssueCard = ({ issue, setSelectedIssue }) => {
             <Sparkles size={14} />
             AI Summary
           </div>
-          <p className="text-xs text-neutral-300 line-clamp-2">
+          <p className="text-sm text-neutral-300 line-clamp-2">
             {issue.aiAnalysis.summary}
           </p>
         </div>

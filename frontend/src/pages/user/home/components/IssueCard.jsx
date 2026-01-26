@@ -41,7 +41,7 @@ const IssueCard = () => {
           Garbage not collected for 5 days
         </h1>
 
-        <p className="text-sm text-neutral-400 leading-relaxed">
+        <p className=" text-sm text-neutral-400 leading-relaxed">
           Garbage is piling up in Sector 12 causing bad smell. This has been an
           ongoing issue for the past week and residents are concerned about
           health risks.
@@ -52,7 +52,7 @@ const IssueCard = () => {
         <h1 className="flex items-center gap-2 text-indigo-400 text-xs font-semibold mb-2">
           <Sparkles size={14} className="animate-pulse" /> AI Summary
         </h1>
-        <p className="text-xs text-neutral-300 line-clamp-2">
+        <p className="text-sm text-neutral-300 ">
           Uncollected garbage in Sector 12 for five days is causing accumulation
           and potential health hazards required immediate attention from the
           municipal corporation.

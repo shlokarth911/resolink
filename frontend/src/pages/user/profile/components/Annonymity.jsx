@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 
-const Annonymity = () => {
+const Annonymity = ({ user }) => {
   return (
     <div className="mt-10">
       <Field orientation="horizontal">
@@ -24,7 +24,12 @@ const Annonymity = () => {
             Raise issues anonymously
           </FieldDescription>
         </FieldContent>
-        <Switch id="switch-focus-mode" size="default" className="scale-125" />
+        <Switch
+          id="switch-focus-mode"
+          size="default"
+          className="scale-125"
+          checked={!!user?.isAnonymousByDefault}
+        />
       </Field>
     </div>
   );

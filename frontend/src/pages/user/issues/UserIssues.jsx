@@ -34,6 +34,7 @@ const UserIssues = () => {
           duration: 0.3,
           scale: 1,
           ease: "power3.out",
+          filter: "blur(0px)",
           backdropFilter: "blur(20px)",
         },
       );
@@ -46,7 +47,7 @@ const UserIssues = () => {
         y: "10%",
         opacity: 0,
         duration: 0.3,
-        scale: 0.8,
+        filter: "blur(20px)",
         ease: "power3.in",
         onComplete: () => setSelectedIssue({}),
       });

@@ -29,3 +29,38 @@ export const getUserIssues = async () => {
     throw error;
   }
 };
+
+export const upvoteIssue = async (issueId) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE}/api/issues/upvote`,
+      { issueId },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error upvoting issue:", error);
+    throw error;
+  }
+};
+
+export const getIssueFeed = async (page = 1, limit = 10) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE}/api/issues/feed?page=${page}&limit=${limit}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching issue feed:", error);
+    throw error;
+  }
+};

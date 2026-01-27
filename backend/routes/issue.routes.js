@@ -6,6 +6,8 @@ const {
   getIssuesByOrganisation,
   getSortedIssues,
   getIssuesByUser,
+  upVote,
+  getIssueFeed,
 } = require("../controllers/issue.controller");
 const { authMiddleware } = require("../middlewares/auth.middleware");
 
@@ -15,5 +17,7 @@ router.get("/user", authMiddleware, getIssuesByUser);
 router.get("/organisation/:id", authMiddleware, getIssuesByOrganisation);
 
 router.get("/sorted", authMiddleware, getSortedIssues);
+router.post("/upvote", authMiddleware, upVote);
+router.get("/feed", authMiddleware, getIssueFeed);
 
 module.exports = router;

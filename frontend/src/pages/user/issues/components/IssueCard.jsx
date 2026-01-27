@@ -7,6 +7,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { upvoteIssue } from "../../../../services/issue";
 
 const IssueCard = ({ issue, setSelectedIssue }) => {
   const calculatePostedAgo = (dateString) => {

@@ -152,3 +152,60 @@ module.exports.getSortedIssues = async (req, res) => {
 
   res.json(sanitizedIssues);
 };
+
+module.exports.upVote = async (req, res) => {
+  try {
+    const { issueId } = req.body;
+
+    const issue = await Issue.findById(issueId);
+    if (!issue) {
+      return res.status(404).json({ message: "Issue not found" });
+    }
+
+    issue.votes += 1;
+    await issue.save();
+
+    res.json({ message: "Issue upvoted successfully", issue });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getIssueFeed = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const filter = {
+      status: { $ne: "resolved" },
+    };
+
+    // Optional category filter
+    if (req.query.category) {
+      filter.category = req.query.category;
+    }
+
+    const issues = await Issue.find(filter)
+      .select(
+        "title category votes status description isAnonymous aiAnalysis.urgency aiAnalysis.summary createdAt",
+      )
+      .sort({
+        priorityScore: -1,
+        votes: -1,
+        createdAt: -1,
+      })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    res.json({
+      page,
+      count: issues.length,
+      issues,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch issue feed" });
+  }
+};

@@ -13,7 +13,23 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Sparkles } from "lucide-react";
 
+import { useNavigate } from "react-router-dom";
+import { userLogOut } from "../../../../services/user";
+
 const HomePageHeader = ({ name }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await userLogOut();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      localStorage.removeItem("user_token");
+      navigate("/login");
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -42,15 +58,18 @@ const HomePageHeader = ({ name }) => {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer">
-                  <Link className="text-base">Your Issues</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
-                  <Link className="text-base">Settings</Link>
+                  <Link to="/user/issues" className="text-base w-full">
+                    Your Issues
+                  </Link>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem variant="destructive">
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={handleLogout}
+                  className="cursor-pointer"
+                >
                   Log out
                 </DropdownMenuItem>
               </DropdownMenuGroup>

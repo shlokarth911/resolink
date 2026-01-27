@@ -14,3 +14,20 @@ export const getUserProfile = async () => {
     throw error;
   }
 };
+
+export const userLogOut = async () => {
+  try {
+    const res = await axios.post(
+      `${API_BASE}/api/user/logout`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+        },
+      },
+    );
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};

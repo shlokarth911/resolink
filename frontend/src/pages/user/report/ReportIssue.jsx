@@ -258,7 +258,7 @@ const ReportIssue = () => {
             className="text-base py-6 rounded-xl border-input/60 focus-visible:ring-blue-500/50 transition-all"
           />
         </Field>
-        {/* Attachments */}
+        {/* Attachments
         <Field className="gap-3">
           <FieldLabel htmlFor="attachments" className="text-base font-medium">
             Attachments
@@ -294,7 +294,7 @@ const ReportIssue = () => {
               SVG, PNG, JPG or GIF (max. 3MB)
             </p>
           </div>
-        </Field>
+        </Field> */}
         {/* Switch */}
         <div className="flex items-center justify-between p-4 rounded-xl border bg-muted/30">
           <Label

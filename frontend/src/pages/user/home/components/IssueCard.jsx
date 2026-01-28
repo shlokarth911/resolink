@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   ArrowUpFromDot,
@@ -11,8 +11,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { upvoteIssue } from "../../../../services/issue";
+import { toast } from "sonner";
 
 const IssueCard = ({ issue }) => {
+  const [issueCount, setIssueCount] = useState(issue.votes);
+  const [voted, setVoted] = useState(false);
+
   const calculatePostedAgo = (dateString) => {
     const created = new Date(dateString);
     const now = new Date();
@@ -25,6 +30,16 @@ const IssueCard = ({ issue }) => {
     } else {
       const diffInDays = Math.floor(diffInHours / 24);
       return `${diffInDays} days ago`;
+    }
+  };
+
+  const handleUpVote = async () => {
+    try {
+      const res = await upvoteIssue(issue._id);
+      setIssueCount(issueCount + 1);
+      setVoted(true);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -83,17 +98,34 @@ const IssueCard = ({ issue }) => {
       </div>
 
       <div className="mt-4 flex items-center gap-3">
+        {voted ? (
+          <Button
+            variant="secondary"
+            className="flex-1 bg-neutral-200 cursor-not-allowed hover:bg-neutral-700 text-neutral-800 border border-neutral-700/50"
+            size="sm"
+            onClick={handleUpVote}
+          >
+            <ThumbsUp className="mr-2 h-4 w-4" /> Upvoted ({issueCount})
+          </Button>
+        ) : (
+          <Button
+            variant="secondary"
+            className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 border border-neutral-700/50"
+            size="sm"
+            onClick={handleUpVote}
+          >
+            <ThumbsUp className="mr-2 h-4 w-4" /> Upvote ({issueCount})
+          </Button>
+        )}
         <Button
           variant="secondary"
           className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 border border-neutral-700/50"
           size="sm"
-        >
-          <ThumbsUp className="mr-2 h-4 w-4" /> Upvote ({issue.votes})
-        </Button>
-        <Button
-          variant="secondary"
-          className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 border border-neutral-700/50"
-          size="sm"
+          onClick={() => {
+            toast.info("Feature not implemented yet", {
+              position: "bottom-center",
+            });
+          }}
         >
           <MessageCircle className="mr-2 h-4 w-4" /> Comment (8)
         </Button>

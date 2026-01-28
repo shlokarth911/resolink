@@ -12,6 +12,24 @@ const OrganisationSchema = new mongoose.Schema({
     required: true,
   },
 
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+  },
+
+  password: {
+    type: String,
+    required: true,
+  },
+
+  issues: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Issue",
+    },
+  ],
+
   description: String,
 
   verified: {

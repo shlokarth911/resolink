@@ -4,6 +4,9 @@ const { analyzeIssue } = require("../utils/gemini");
 const { checkDuplicate } = require("../utils/geminiDuplicate");
 const { generateSolutions } = require("../utils/geminiSolutions");
 const User = require("../models/User");
+const Organisation = require("../models/Organisation");
+
+const jwt = require("jsonwebtoken");
 
 module.exports.createIssue = async (req, res) => {
   try {
@@ -207,5 +210,56 @@ exports.getIssueFeed = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to fetch issue feed" });
+  }
+};
+
+module.exports.getOrganisationIssues = async (req, res) => {
+  try {
+    const token = req.cookies.organisation_token;
+    if (!token) {
+      return res.status(400).json({ message: "Organisation not found" });
+    }
+
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+    const organisation = await Organisation.findById(decodedToken.id);
+    if (!organisation) {
+      return res.status(400).json({ message: "Organisation not found" });
+    }
+    const issues = await Issue.find({ organisation: organisation._id });
+    return res.status(200).json({
+      success: true,
+      message: "Issues fetched successfully",
+      issues,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch issues",
+      error: error.message,
+    });
+  }
+};
+
+module.exports.setIssueStatus = async (req, res) => {
+  try {
+    const { issueId, status } = req.body;
+    const issue = await Issue.findById(issueId);
+    if (!issue) {
+      return res.status(404).json({ message: "Issue not found" });
+    }
+    issue.status = status;
+    await issue.save();
+    return res.status(200).json({
+      success: true,
+      message: "Issue status updated successfully",
+      issue,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update issue status",
+      error: error.message,
+    });
   }
 };

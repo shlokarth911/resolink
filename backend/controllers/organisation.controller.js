@@ -26,6 +26,9 @@ module.exports.createOrganisation = async (req, res) => {
       password: hashedPassword,
     });
 
+    const organisationResponse = organisation.toObject();
+    delete organisationResponse.password;
+
     const token = jwt.sign({ id: organisation._id }, process.env.JWT_SECRET, {
       expiresIn: "30d",
     });
@@ -35,7 +38,8 @@ module.exports.createOrganisation = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Organisation created successfully",
-      organisation,
+      organisation: organisationResponse,
+      token,
     });
   } catch (error) {
     return res.status(500).json({
@@ -69,10 +73,14 @@ module.exports.loginOrganisation = async (req, res) => {
 
     res.cookie("organisation_token", token);
 
+    const organisationResponse = organisation.toObject();
+    delete organisationResponse.password;
+
     return res.status(200).json({
       success: true,
       message: "Organisation logged in successfully",
-      organisation,
+      organisation: organisationResponse,
+      token,
     });
   } catch (error) {
     return res.status(500).json({
@@ -101,15 +109,11 @@ module.exports.logoutOrganisation = async (req, res) => {
 
 module.exports.getOrganisationProfile = async (req, res) => {
   try {
-    const token = req.cookies.organisation_token;
-    if (!token) {
-      return res.status(400).json({ message: "Organisation not found" });
-    }
-
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    const organisation = await Organisation.findById(decodedToken.id);
+    const organisation = await Organisation.findById(
+      req.organisation.id,
+    ).select("-password");
     if (!organisation) {
-      return res.status(400).json({ message: "Organisation not found" });
+      return res.status(404).json({ message: "Organisation not found" });
     }
     return res.status(200).json({
       success: true,

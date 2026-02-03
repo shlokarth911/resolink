@@ -215,18 +215,15 @@ exports.getIssueFeed = async (req, res) => {
 
 module.exports.getOrganisationIssues = async (req, res) => {
   try {
-    const token = req.cookies.organisation_token;
-    if (!token) {
-      return res.status(400).json({ message: "Organisation not found" });
-    }
-
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-
-    const organisation = await Organisation.findById(decodedToken.id);
+    const organisation = await Organisation.findById(req.organisation.id);
     if (!organisation) {
-      return res.status(400).json({ message: "Organisation not found" });
+      console.log("Organisation not found in DB for ID:", req.organisation.id);
+      return res.status(404).json({ message: "Organisation not found" });
     }
     const issues = await Issue.find({ organisation: organisation._id });
+    console.log(
+      `Found ${issues.length} issues for organisation: ${organisation.name}`,
+    );
     return res.status(200).json({
       success: true,
       message: "Issues fetched successfully",

@@ -64,3 +64,17 @@ export const getIssueFeed = async (page = 1, limit = 10) => {
     throw error;
   }
 };
+
+export const getOrganisationIssues = async () => {
+  try {
+    const response = await axios.get(`${API_BASE}/api/issues/organisation`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("organisation_token")}`,
+      },
+    });
+    return response.data.issues;
+  } catch (error) {
+    console.error("Error fetching issues:", error);
+    throw error;
+  }
+};

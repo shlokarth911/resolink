@@ -13,6 +13,7 @@ import UserIssues from "./pages/user/issues/UserIssues";
 import OrganisationLayout from "./layouts/OrganisationLayout";
 import OrganisationProtectedWrappper from "./context/OrganisationProtectedWrappper";
 import DashBoard from "./pages/organisation/dashboard/DashBoard";
+import OrganisationIssues from "./pages/organisation/issues/OrganisationIssues";
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
         }
       >
         <Route path="dashboard" element={<DashBoard />} />
+        <Route path="issues" element={<OrganisationIssues />} />
       </Route>
 
       <Route

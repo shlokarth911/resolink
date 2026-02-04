@@ -5,7 +5,7 @@ import IssueCard from "./components/IssueCard";
 import IssueDetails from "./components/IssueDetails";
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import UpdateStatusModal from "./components/UpdateStatusModal";
@@ -71,6 +71,12 @@ const OrganisationIssues = () => {
   };
   return (
     <div className="p-5">
+      {/* Back Button */}
+      <Button variant="outline" className="mb-5" onClick={() => navigate(-1)}>
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Back
+      </Button>
+
       <h1 className="text-2xl font-bold">Browse Issues</h1>
       <p className="text-muted-foreground mt-2 text-sm">
         View and track issues reported by the community.

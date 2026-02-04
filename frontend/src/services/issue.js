@@ -78,3 +78,24 @@ export const getOrganisationIssues = async () => {
     throw error;
   }
 };
+
+export const updateIssueStatus = async (issueId, status) => {
+  try {
+    const response = await axios.put(
+      `${API_BASE}/api/issues/status`,
+      {
+        issueId,
+        status,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("organisation_token")}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating issue status:", error);
+    throw error;
+  }
+};

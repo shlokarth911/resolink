@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Drawer,
   DrawerClose,
@@ -18,8 +18,37 @@ import {
   FieldTitle,
 } from "@/components/ui/field";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Check, CircleAlert, CircleCheckBig, Clock } from "lucide-react";
+import { toast } from "sonner";
+import { updateIssueStatus } from "../../../../services/issue";
 
-const UpdateStatusModal = ({ open, onOpenChange, issue }) => {
+const UpdateStatusModal = ({ open, onOpenChange, issue, onSuccess }) => {
+  const [status, setStatus] = React.useState(issue?.status || "open");
+
+  useEffect(() => {
+    if (issue?.status) {
+      setStatus(issue.status);
+    }
+  }, [issue, open]);
+
+  const updateStatus = async (status) => {
+    try {
+      let res = await updateIssueStatus(issue._id, status);
+
+      if (res.success) {
+        toast.success("Issue status updated successfully");
+        if (onSuccess) onSuccess();
+      } else {
+        toast.error("Failed to update issue status");
+      }
+
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error updating issue status:", error);
+      toast.error("An error occurred while updating status");
+    }
+  };
+
   return (
     <>
       <Drawer open={open} onOpenChange={onOpenChange}>
@@ -29,31 +58,42 @@ const UpdateStatusModal = ({ open, onOpenChange, issue }) => {
             <DrawerDescription>
               Update the status of the issue.
               <div className="mt-5">
-                <RadioGroup defaultValue={issue.status} className="max-w-sm ">
-                  <FieldLabel htmlFor="plus-plan">
-                    <Field orientation="horizontal">
-                      <FieldContent>
-                        <FieldTitle className="text-base">Open</FieldTitle>
-                      </FieldContent>
-                      <RadioGroupItem value="open" id="plus-plan" />
-                    </Field>
-                  </FieldLabel>
-                  <FieldLabel htmlFor="pro-plan">
+                <RadioGroup
+                  value={status}
+                  onValueChange={setStatus}
+                  className="max-w-sm"
+                >
+                  <FieldLabel htmlFor="open-status">
                     <Field orientation="horizontal">
                       <FieldContent>
                         <FieldTitle className="text-base">
-                          In Progress
+                          <CircleAlert size={20} /> Open
                         </FieldTitle>
                       </FieldContent>
-                      <RadioGroupItem value="in_progress" id="pro-plan" />
+                      <RadioGroupItem value="open" id="open-status" />
                     </Field>
                   </FieldLabel>
-                  <FieldLabel htmlFor="enterprise-plan">
+                  <FieldLabel htmlFor="progress-status">
                     <Field orientation="horizontal">
                       <FieldContent>
-                        <FieldTitle className="text-base">Resolved</FieldTitle>
+                        <FieldTitle className="text-base">
+                          <Clock size={20} /> In Progress
+                        </FieldTitle>
                       </FieldContent>
-                      <RadioGroupItem value="closed" id="enterprise-plan" />
+                      <RadioGroupItem
+                        value="in_progress"
+                        id="progress-status"
+                      />
+                    </Field>
+                  </FieldLabel>
+                  <FieldLabel htmlFor="resolved-status">
+                    <Field orientation="horizontal">
+                      <FieldContent>
+                        <FieldTitle className="text-base">
+                          <CircleCheckBig size={20} /> Resolved
+                        </FieldTitle>
+                      </FieldContent>
+                      <RadioGroupItem value="resolved" id="resolved-status" />
                     </Field>
                   </FieldLabel>
                 </RadioGroup>
@@ -61,7 +101,12 @@ const UpdateStatusModal = ({ open, onOpenChange, issue }) => {
             </DrawerDescription>
           </DrawerHeader>
           <DrawerFooter>
-            <Button className="w-full text-base p-6 rounded-xl">Update</Button>
+            <Button
+              className="w-full text-base p-6 rounded-xl"
+              onClick={() => updateStatus(status)}
+            >
+              Update
+            </Button>
             <DrawerClose>
               <Button
                 className="mt-2 w-full text-base p-6 rounded-xl"

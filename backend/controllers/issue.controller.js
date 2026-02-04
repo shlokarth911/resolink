@@ -221,9 +221,7 @@ module.exports.getOrganisationIssues = async (req, res) => {
       return res.status(404).json({ message: "Organisation not found" });
     }
     const issues = await Issue.find({ organisation: organisation._id });
-    console.log(
-      `Found ${issues.length} issues for organisation: ${organisation.name}`,
-    );
+
     return res.status(200).json({
       success: true,
       message: "Issues fetched successfully",

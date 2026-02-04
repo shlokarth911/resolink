@@ -19,8 +19,18 @@ const OrganisationIssues = () => {
   const navigate = useNavigate();
 
   const fetchIssues = async () => {
-    const issues = await getOrganisationIssues();
-    setIssues(issues);
+    const fetchedIssues = await getOrganisationIssues();
+    setIssues(fetchedIssues);
+
+    // Update selectedIssue if it's currently open
+    if (selectedIssue?._id) {
+      const updatedIssue = fetchedIssues.find(
+        (i) => i._id === selectedIssue._id,
+      );
+      if (updatedIssue) {
+        setSelectedIssue(updatedIssue);
+      }
+    }
   };
 
   useEffect(() => {
@@ -103,6 +113,7 @@ const OrganisationIssues = () => {
           issue={selectedIssue}
           open={isModalOpen}
           onOpenChange={setIsModalOpen}
+          onSuccess={fetchIssues}
         />
       </div>
     </div>

@@ -8,10 +8,13 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import UpdateStatusModal from "./components/UpdateStatusModal";
 
 const OrganisationIssues = () => {
   const [issues, setIssues] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const containerRef = useRef(null);
   const navigate = useNavigate();
 
@@ -87,10 +90,21 @@ const OrganisationIssues = () => {
             >
               <X size={14} />
             </Button>
-            <IssueDetails issue={selectedIssue} />
+            <IssueDetails
+              issue={selectedIssue}
+              setIsModalOpen={setIsModalOpen}
+            />
           </div>
         </div>
       )}
+
+      <div>
+        <UpdateStatusModal
+          issue={selectedIssue}
+          open={isModalOpen}
+          onOpenChange={setIsModalOpen}
+        />
+      </div>
     </div>
   );
 };

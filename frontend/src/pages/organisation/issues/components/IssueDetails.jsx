@@ -10,8 +10,17 @@ import {
   ArrowRight,
   TrendingUp,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldLabel,
+  FieldTitle,
+} from "@/components/ui/field";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-const IssueDetails = ({ issue }) => {
+const IssueDetails = ({ issue, setIsModalOpen }) => {
   const calculatePostedAgo = (dateString) => {
     const created = new Date(dateString);
     const now = new Date();
@@ -159,6 +168,15 @@ const IssueDetails = ({ issue }) => {
           </div>
         </div>
       </div>
+
+      {/* Update Status */}
+      <Button
+        onClick={() => setIsModalOpen(true)}
+        className="flex items-center gap-2  rounded-lg   w-full p-5s  mt-2"
+      >
+        <CheckCircle2 size={14} className=" mt-0.5" />
+        <p>Update Status</p>
+      </Button>
 
       <div className="flex items-start gap-2 p-3 rounded-lg bg-orange-500/5 border border-orange-500/10 text-orange-400/80 text-xs mt-2">
         <AlertTriangle size={14} className="shrink-0 mt-0.5" />

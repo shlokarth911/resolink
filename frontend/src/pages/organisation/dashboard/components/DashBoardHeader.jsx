@@ -35,10 +35,6 @@ const DashBoardHeader = () => {
         <h1 className="text-2xl font-bold">Dashboard</h1>
       </div>
       <div>
-        <Button variant="outline" size="sm" className="mr-2">
-          <Sparkles className="mr-2 h-4 w-4" />
-          Upgrade
-        </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
@@ -53,9 +49,7 @@ const DashBoardHeader = () => {
               <DropdownMenuItem asChild>
                 <Link to="/org/profile">Profile</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/org/settings">Settings</Link>
-              </DropdownMenuItem>
+
               <DropdownMenuItem asChild>
                 <Link to="/settings">Settings</Link>
               </DropdownMenuItem>

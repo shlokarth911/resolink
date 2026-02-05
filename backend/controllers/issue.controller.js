@@ -289,3 +289,46 @@ module.exports.setIssueStatus = async (req, res) => {
     });
   }
 };
+
+module.exports.getIssueCount = async (req, res) => {
+  try {
+    const organisation = await Organisation.findById(req.organisation.id);
+    if (!organisation) {
+      return res.status(404).json({ message: "Organisation not found" });
+    }
+
+    const totalIssues = await Issue.countDocuments({
+      organisation: organisation._id,
+    });
+
+    const openIssues = await Issue.countDocuments({
+      organisation: organisation._id,
+      status: "open",
+    });
+
+    const inProgressIssues = await Issue.countDocuments({
+      organisation: organisation._id,
+      status: "in_progress",
+    });
+
+    const resolvedIssues = await Issue.countDocuments({
+      organisation: organisation._id,
+      status: "resolved",
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Issue count fetched successfully",
+      totalIssues,
+      openIssues,
+      inProgressIssues,
+      resolvedIssues,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch issue count",
+      error: error.message,
+    });
+  }
+};

@@ -3,10 +3,12 @@ import PersonalInfo from "./components/PersonalInfo";
 import { getOrganisationProfile } from "../../../services/organisation";
 import AdditionalInfo from "./components/AdditionalInfo";
 import { Button } from "@/components/ui/button";
-import { LogOut, Pencil } from "lucide-react";
+import { ArrowLeft, LogOut, Pencil } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const OrganisationProfile = () => {
   const [org, setOrg] = useState({});
+  const navigate = useNavigate();
 
   const fetchOrgProfile = async () => {
     try {
@@ -23,6 +25,16 @@ const OrganisationProfile = () => {
 
   return (
     <div className="p-4">
+      {/* Back */}
+      <Button
+        onClick={() => navigate(-1)}
+        variant="outline"
+        className="rounded-xl p-2 mb-4"
+      >
+        <ArrowLeft />
+        Back
+      </Button>
+
       <h1 className="text-2xl font-bold">Profile</h1>
 
       <div className="mt-5">

@@ -4,7 +4,7 @@ import DashBoardStatistics from "./components/DashBoardStatistics";
 import TopIssues from "./components/TopIssues";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { getOrganisationIssues } from "../../../services/issue";
+import { getIssueCount, getOrganisationIssues } from "../../../services/issue";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -20,20 +20,12 @@ const DashBoard = () => {
 
   const fetchOrgIssues = async () => {
     try {
-      const issues = await getOrganisationIssues();
-      setIssues(issues);
+      const issues = await getIssueCount();
 
-      setHighPriorityIssues(
-        issues.filter((issue) => issue.aiAnalysis.urgency === "high"),
-      );
-      setTotalIssues(issues.length);
-      setOpenIssues(issues.filter((issue) => issue.status === "open").length);
-      setInProgressIssues(
-        issues.filter((issue) => issue.status === "in-progress").length,
-      );
-      setResolvedIssues(
-        issues.filter((issue) => issue.status === "resolved").length,
-      );
+      setTotalIssues(issues?.totalIssues);
+      setOpenIssues(issues?.openIssues);
+      setInProgressIssues(issues?.inProgressIssues);
+      setResolvedIssues(issues?.resolvedIssues);
     } catch (error) {
       console.log(error);
     }

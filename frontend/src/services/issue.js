@@ -65,6 +65,21 @@ export const getIssueFeed = async (page = 1, limit = 10) => {
   }
 };
 
+// Get IssueCount
+export const getIssueCount = async () => {
+  try {
+    const response = await axios.get(`${API_BASE}/api/issues/count`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("organisation_token")}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching issue count:", error);
+    throw error;
+  }
+};
+
 export const getOrganisationIssues = async ({
   page = 1,
   limit = 10,

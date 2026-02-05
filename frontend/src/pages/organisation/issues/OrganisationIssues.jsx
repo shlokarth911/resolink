@@ -9,33 +9,98 @@ import { ArrowLeft, X } from "lucide-react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import UpdateStatusModal from "./components/UpdateStatusModal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const OrganisationIssues = () => {
   const [issues, setIssues] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [urgencyFilter, setUrgencyFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
 
   const containerRef = useRef(null);
+  const observer = useRef();
   const navigate = useNavigate();
 
-  const fetchIssues = async () => {
-    const fetchedIssues = await getOrganisationIssues();
-    setIssues(fetchedIssues);
+  const lastIssueElementRef = React.useCallback(
+    (node) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasMore],
+  );
 
-    // Update selectedIssue if it's currently open
-    if (selectedIssue?._id) {
-      const updatedIssue = fetchedIssues.find(
-        (i) => i._id === selectedIssue._id,
-      );
-      if (updatedIssue) {
-        setSelectedIssue(updatedIssue);
+  const fetchIssues = async (pageNum = 1) => {
+    setLoading(true);
+    try {
+      const data = await getOrganisationIssues({
+        page: pageNum,
+        status: statusFilter,
+        urgency: urgencyFilter,
+        sortBy,
+      });
+
+      if (pageNum === 1) {
+        setIssues(data.issues);
+      } else {
+        setIssues((prev) => {
+          // Filter out any duplicates just in case
+          const newIssues = data.issues.filter(
+            (newIssue) =>
+              !prev.some((existing) => existing._id === newIssue._id),
+          );
+          return [...prev, ...newIssues];
+        });
       }
+
+      setHasMore(data.page < data.totalPages);
+
+      // Update selectedIssue if it's currently open and found in the new batch (mostly relevant for refresh)
+      if (selectedIssue?._id) {
+        const updatedIssue = data.issues.find(
+          (i) => i._id === selectedIssue._id,
+        );
+        if (updatedIssue) {
+          setSelectedIssue(updatedIssue);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch issues", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchIssues();
-  }, []);
+    setPage(1);
+    fetchIssues(1);
+  }, [statusFilter, urgencyFilter, sortBy]);
+
+  useEffect(() => {
+    if (page > 1) fetchIssues(page);
+  }, [page]);
+
+  // Handler for when an issue status is updated - refresh the list (reset to page 1)
+  const handleIssueUpdate = () => {
+    setPage(1);
+    fetchIssues(1);
+  };
 
   useGSAP(() => {
     if (selectedIssue._id && containerRef.current) {
@@ -82,14 +147,73 @@ const OrganisationIssues = () => {
         View and track issues reported by the community.
       </p>
 
+      {/* Filters */}
+
+      <div className="mt-5">
+        <h1 className="text-xl font-bold mb-2">Filters</h1>
+        <div className="flex flex-wrap gap-4 mb-6">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="open">Open</SelectItem>
+              <SelectItem value="in_progress">In Progress</SelectItem>
+              <SelectItem value="resolved">Resolved</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={urgencyFilter} onValueChange={setUrgencyFilter}>
+            <SelectTrigger className="">
+              <SelectValue placeholder="Urgency" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Urgencies</SelectItem>
+              <SelectItem value="critical">Critical</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="low">Low</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="">
+              <SelectValue placeholder="Sort By" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="newest">Newest</SelectItem>
+              <SelectItem value="priority">Priority Score</SelectItem>
+              <SelectItem value="votes">Most Voted</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
       <div className="mt-5 flex flex-col gap-5 pb-24">
-        {issues.map((issue) => (
-          <IssueCard
-            key={issue._id}
-            issue={issue}
-            setSelectedIssue={setSelectedIssue}
-          />
-        ))}
+        {issues.map((issue, index) => {
+          if (issues.length === index + 1) {
+            return (
+              <div ref={lastIssueElementRef} key={issue._id}>
+                <IssueCard issue={issue} setSelectedIssue={setSelectedIssue} />
+              </div>
+            );
+          } else {
+            return (
+              <IssueCard
+                key={issue._id}
+                issue={issue}
+                setSelectedIssue={setSelectedIssue}
+              />
+            );
+          }
+        })}
+        {loading && (
+          <div className="text-center py-4">Loading more issues...</div>
+        )}
+        {!hasMore && issues.length > 0 && (
+          <div className="text-center py-4 text-muted-foreground">
+            No more issues
+          </div>
+        )}
       </div>
 
       {selectedIssue._id && (
@@ -119,7 +243,7 @@ const OrganisationIssues = () => {
           issue={selectedIssue}
           open={isModalOpen}
           onOpenChange={setIsModalOpen}
-          onSuccess={fetchIssues}
+          onSuccess={handleIssueUpdate}
         />
       </div>
     </div>

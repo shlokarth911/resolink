@@ -215,17 +215,48 @@ exports.getIssueFeed = async (req, res) => {
 
 module.exports.getOrganisationIssues = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const { status, urgency, sortBy } = req.query;
+
     const organisation = await Organisation.findById(req.organisation.id);
     if (!organisation) {
-      console.log("Organisation not found in DB for ID:", req.organisation.id);
       return res.status(404).json({ message: "Organisation not found" });
     }
-    const issues = await Issue.find({ organisation: organisation._id });
+
+    // Build Query
+    const query = { organisation: organisation._id };
+    if (status && status !== "all") {
+      query.status = status;
+    }
+    if (urgency && urgency !== "all") {
+      query["aiAnalysis.urgency"] = urgency;
+    }
+
+    // Determine Sort Order
+    let sortOptions = { createdAt: -1 }; // Default: Newest first
+    if (sortBy === "priority") {
+      sortOptions = { priorityScore: -1, createdAt: -1 };
+    } else if (sortBy === "votes") {
+      sortOptions = { votes: -1, createdAt: -1 };
+    }
+
+    const totalIssues = await Issue.countDocuments(query); // Total count for frontend to know when to stop
+
+    const issues = await Issue.find(query)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limit);
 
     return res.status(200).json({
       success: true,
       message: "Issues fetched successfully",
       issues,
+      page,
+      totalPages: Math.ceil(totalIssues / limit),
+      totalIssues,
     });
   } catch (error) {
     return res.status(500).json({

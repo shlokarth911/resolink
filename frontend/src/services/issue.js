@@ -65,14 +65,32 @@ export const getIssueFeed = async (page = 1, limit = 10) => {
   }
 };
 
-export const getOrganisationIssues = async () => {
+export const getOrganisationIssues = async ({
+  page = 1,
+  limit = 10,
+  status = "all",
+  urgency = "all",
+  sortBy = "newest",
+}) => {
   try {
-    const response = await axios.get(`${API_BASE}/api/issues/organisation`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("organisation_token")}`,
-      },
+    const params = new URLSearchParams({
+      page,
+      limit,
     });
-    return response.data.issues;
+
+    if (status && status !== "all") params.append("status", status);
+    if (urgency && urgency !== "all") params.append("urgency", urgency);
+    if (sortBy && sortBy !== "newest") params.append("sortBy", sortBy);
+
+    const response = await axios.get(
+      `${API_BASE}/api/issues/organisation?${params.toString()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("organisation_token")}`,
+        },
+      },
+    );
+    return response.data;
   } catch (error) {
     console.error("Error fetching issues:", error);
     throw error;

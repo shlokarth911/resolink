@@ -51,17 +51,9 @@ const IssueCard = ({ issue }) => {
       </div>
 
       <div className="flex items-center gap-3 mb-4">
-        <Avatar className="h-10 w-10 border border-neutral-700">
-          <AvatarImage src="https://github.com/shadcn.png" alt="shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-        <div>
-          <h1 className="text-sm font-medium text-neutral-200">Username</h1>
-          <p className="text-xs text-neutral-500">Resident</p>
-        </div>
         <Badge
           variant="outline"
-          className="ml-auto border-neutral-800 bg-neutral-900/50 text-neutral-400"
+          className=" border-neutral-800 bg-neutral-900/50 text-neutral-400"
         >
           {issue.category}
         </Badge>
@@ -127,7 +119,7 @@ const IssueCard = ({ issue }) => {
             });
           }}
         >
-          <MessageCircle className="mr-2 h-4 w-4" /> Comment (8)
+          <MessageCircle className="mr-2 h-4 w-4" /> Comment (0)
         </Button>
       </div>
     </div>

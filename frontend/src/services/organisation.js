@@ -69,3 +69,17 @@ export const logoutOrganisation = async () => {
     throw error;
   }
 };
+
+export const getAllOrganisations = async () => {
+  try {
+    const token = localStorage.getItem("user_token");
+    const res = await axios.get(`${API_BASE}/api/organisation/all`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res;
+  } catch (error) {
+    throw error;
+  }
+};

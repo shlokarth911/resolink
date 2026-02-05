@@ -20,6 +20,7 @@ const {
 router.post("/", authMiddleware, createIssue);
 router.get("/", authMiddleware, getIssues);
 router.get("/count", organisationAuthMiddleware, getIssueCount);
+
 router.get("/user", authMiddleware, getIssuesByUser);
 router.get("/organisation", organisationAuthMiddleware, getOrganisationIssues);
 router.put("/status", organisationAuthMiddleware, setIssueStatus);

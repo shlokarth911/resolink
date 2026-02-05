@@ -9,6 +9,8 @@ import {
   ArrowRight,
   TrendingUp,
 } from "lucide-react";
+import { ThumbsUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import React from "react";
 
 const IssueDetails = ({ issue }) => {
@@ -82,7 +84,6 @@ const IssueDetails = ({ issue }) => {
           </div>
         </div>
       </div>
-
       {/* AI Summary Card */}
       <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-4 relative overflow-hidden group">
         <div className="absolute inset-0 bg-linear-to-br from-indigo-500/10 via-purple-500/5 to-transparent opacity-50" />
@@ -96,45 +97,19 @@ const IssueDetails = ({ issue }) => {
           </p>
         </div>
       </div>
+      {/* Upvotes */}
 
-      {/* Solutions Grid */}
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Immediate Actions */}
-        <div className="space-y-3">
-          <h3 className="flex items-center gap-2 text-sm font-semibold text-emerald-400 uppercase tracking-wider">
-            <CheckCircle2 size={16} /> Immediate Actions
-          </h3>
-          <ul className="space-y-2">
-            {issue.aiSolutions?.immediateActions?.map((action, index) => (
-              <li
-                key={index}
-                className="flex items-start gap-3 p-3 rounded-xl bg-neutral-900/50 border border-neutral-800/50 text-sm text-neutral-300 hover:border-emerald-500/30 transition-colors"
-              >
-                <span className="mt-1 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                {action}
-              </li>
-            ))}
-          </ul>
+      <div className="flex items-center gap-3 p-4 rounded-2xl bg-neutral-800/30 border border-neutral-800/50">
+        <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
+          <ThumbsUp size={20} />
         </div>
-
-        {/* Long Term Strategy */}
-        <div className="space-y-3">
-          <h3 className="flex items-center gap-2 text-sm font-semibold text-blue-400 uppercase tracking-wider">
-            <TrendingUp size={16} /> Strategic Plan
-          </h3>
-          <ul className="space-y-2">
-            {issue.aiSolutions?.longTermActions?.map((action, index) => (
-              <li
-                key={index}
-                className="flex items-start gap-3 p-3 rounded-xl bg-neutral-900/50 border border-neutral-800/50 text-sm text-neutral-300 hover:border-blue-500/30 transition-colors"
-              >
-                <div className="mt-0.5 shrink-0">
-                  <ArrowRight size={14} className="text-blue-500/50" />
-                </div>
-                {action}
-              </li>
-            ))}
-          </ul>
+        <div>
+          <div className="text-lg font-bold text-neutral-200">
+            {issue.upvotes || 0}
+          </div>
+          <div className="text-xs text-neutral-500 uppercase tracking-widest font-medium">
+            Total Upvotes
+          </div>
         </div>
       </div>
 
@@ -159,7 +134,6 @@ const IssueDetails = ({ issue }) => {
           </div>
         </div>
       </div>
-
       <div className="flex items-start gap-2 p-3 rounded-lg bg-orange-500/5 border border-orange-500/10 text-orange-400/80 text-xs mt-2">
         <AlertTriangle size={14} className="shrink-0 mt-0.5" />
         <p>

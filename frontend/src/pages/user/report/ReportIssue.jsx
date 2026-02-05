@@ -6,7 +6,7 @@ import {
   Building2,
   ArrowLeft,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -39,29 +39,12 @@ import { cn } from "@/lib/utils";
 import { createIssue } from "../../../services/issue";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-
-const organisations = [
-  {
-    value: "69810a5651a0a996108c7521",
-    label: "Bruhat Bengaluru Mahanagara Palike (BBMP)",
-  },
-  { value: "bescom", label: "Bangalore Electricity Supply Company (BESCOM)" },
-  {
-    value: "bwssb",
-    label: "Bangalore Water Supply and Sewerage Board (BWSSB)",
-  },
-  {
-    value: "bmtc",
-    label: "Bengaluru Metropolitan Transport Corporation (BMTC)",
-  },
-  { value: "bda", label: "Bangalore Development Authority (BDA)" },
-  { value: "kspcb", label: "Karnataka State Pollution Control Board" },
-  { value: "other", label: "Other / Not Sure" },
-];
+import { getAllOrganisations } from "../../../services/organisation";
 
 const ReportIssue = () => {
   const [open, setOpen] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState("");
+  const [organisations, setOrganisations] = useState([]);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -73,10 +56,20 @@ const ReportIssue = () => {
 
   const navigate = useNavigate();
 
-  const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    setAttachments(files);
+  const fetchOrg = async () => {
+    try {
+      const response = await getAllOrganisations();
+      if (response.data && response.data.organisations) {
+        setOrganisations(response.data.organisations);
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
   };
+
+  useEffect(() => {
+    fetchOrg();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -185,10 +178,7 @@ const ReportIssue = () => {
                 {selectedOrg ? (
                   <span className="text-foreground flex items-center gap-2">
                     <Building2 className="w-4 h-4 text-muted-foreground" />
-                    {
-                      organisations.find((org) => org.value === selectedOrg)
-                        ?.label
-                    }
+                    {organisations.find((org) => org._id === selectedOrg)?.name}
                   </span>
                 ) : (
                   <span className="text-muted-foreground">
@@ -216,10 +206,10 @@ const ReportIssue = () => {
                   <CommandGroup>
                     {organisations.map((org) => (
                       <CommandItem
-                        key={org.value}
-                        value={org.label}
+                        key={org._id}
+                        value={org.name}
                         onSelect={() => {
-                          setSelectedOrg(org.value);
+                          setSelectedOrg(org._id);
                           setOpen(false);
                         }}
                         className="flex items-center gap-2 p-3 rounded-lg cursor-pointer aria-selected:bg-blue-500/10 aria-selected:text-blue-600"
@@ -227,12 +217,12 @@ const ReportIssue = () => {
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4 text-blue-600 transition-opacity",
-                            selectedOrg === org.value
+                            selectedOrg === org._id
                               ? "opacity-100"
                               : "opacity-0",
                           )}
                         />
-                        <span className="flex-1">{org.label}</span>
+                        <span className="flex-1">{org.name}</span>
                       </CommandItem>
                     ))}
                   </CommandGroup>

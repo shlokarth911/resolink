@@ -128,3 +128,20 @@ module.exports.getOrganisationProfile = async (req, res) => {
     });
   }
 };
+
+module.exports.getAllOrganisations = async (req, res) => {
+  try {
+    const organisations = await Organisation.find().select("-password");
+    return res.status(200).json({
+      success: true,
+      message: "Organisations fetched successfully",
+      organisations,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch organisations",
+      error: error.message,
+    });
+  }
+};

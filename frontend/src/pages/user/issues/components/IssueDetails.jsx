@@ -105,7 +105,7 @@ const IssueDetails = ({ issue }) => {
         </div>
         <div>
           <div className="text-lg font-bold text-neutral-200">
-            {issue.upvotes || 0}
+            {issue.votes || 0}
           </div>
           <div className="text-xs text-neutral-500 uppercase tracking-widest font-medium">
             Total Upvotes

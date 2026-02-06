@@ -1,6 +1,6 @@
 const Issue = require("../models/Issue");
 const { createIssue } = require("../services/issue.service");
-const { analyzeIssue } = require("../utils/gemini");
+const { analyzeIssue, verifyIssueImage } = require("../utils/gemini");
 const { checkDuplicate } = require("../utils/geminiDuplicate");
 const { generateSolutions } = require("../utils/geminiSolutions");
 const User = require("../models/User");
@@ -10,8 +10,14 @@ const jwt = require("jsonwebtoken");
 
 module.exports.createIssue = async (req, res) => {
   try {
-    const { title, description, category, organisationId, isAnonymous } =
-      req.body;
+    const {
+      title,
+      description,
+      category,
+      organisationId,
+      isAnonymous,
+      attachments,
+    } = req.body;
 
     // 1️⃣ Fetch recent issues of same organisation
     const recentIssues = await Issue.find({
@@ -45,7 +51,33 @@ module.exports.createIssue = async (req, res) => {
       }
     }
 
-    // 4️⃣ If not duplicate → AI Analysis & Creation
+    // 4️⃣ Image Verification (Multimodal)
+    let verificationResult = null;
+    let imageBase64 = null;
+
+    if (attachments && attachments.length > 0) {
+      // Assuming attachments[0] is the Base64 string
+      const fullBase64 = attachments[0];
+      if (fullBase64.startsWith("data:image")) {
+        const matches = fullBase64.match(/^data:(.+);base64,(.+)$/);
+        if (matches) {
+          const mimeType = matches[1];
+          const base64Data = matches[2];
+          imageBase64 = base64Data;
+
+          console.log("Verifying image with Gemini...");
+          verificationResult = await verifyIssueImage(base64Data, mimeType);
+          console.log("Verification Result:", verificationResult);
+
+          if (!verificationResult.isLegitimate) {
+            // Option: Reject or just flag. Here we flag it but still allow creation (or could reject)
+            console.warn("Issue flagged as not legitimate by AI.");
+          }
+        }
+      }
+    }
+
+    // 5️⃣ AI Analysis & Creation
     const aiData = await analyzeIssue(title, description);
     console.log("AI Analysis Result:", aiData);
 
@@ -65,13 +97,22 @@ module.exports.createIssue = async (req, res) => {
     const issue = await createIssue({
       title,
       description,
-      category: aiData.category || category?.trim() || null,
+      category:
+        verificationResult?.damageType ||
+        aiData.category ||
+        category?.trim() ||
+        null,
       organisation: organisationId,
       postedBy: req.user.id,
       isAnonymous: isAnonymous || false,
       aiAnalysis: aiData,
       aiSolutions,
-      priorityScore: priorityMap[aiData.urgency] || 1,
+      priorityScore:
+        priorityMap[verificationResult?.severity >= 8 ? "critical" : ""] ||
+        priorityMap[aiData.urgency] ||
+        1,
+      attachments: attachments || [],
+      verificationResult,
     });
 
     return res.status(201).json({

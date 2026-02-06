@@ -78,6 +78,17 @@ const IssueSchema = new mongoose.Schema({
     estimatedResolutionTime: String,
   },
 
+  attachments: [String], // Array of Base64 strings or URLs
+
+  verificationResult: {
+    isLegitimate: Boolean,
+    damageType: String,
+    severity: Number,
+    safetyRisk: String,
+    repairCostEstimate: String,
+    reasoning: String,
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,

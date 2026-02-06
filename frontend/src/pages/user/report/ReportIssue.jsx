@@ -67,6 +67,18 @@ const ReportIssue = () => {
     }
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAttachments([reader.result]);
+        toast.info("Image added for AI verification");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   useEffect(() => {
     fetchOrg();
   }, []);
@@ -248,43 +260,37 @@ const ReportIssue = () => {
             className="text-base py-6 rounded-xl border-input/60 focus-visible:ring-blue-500/50 transition-all"
           />
         </Field>
-        {/* Attachments
         <Field className="gap-3">
           <FieldLabel htmlFor="attachments" className="text-base font-medium">
-            Attachments
+            Evidence (Image)
           </FieldLabel>
-          <div className="border border-dashed border-input py-8 px-4 rounded-xl flex flex-col items-center justify-center text-center hover:bg-muted/20 transition-colors cursor-pointer bg-muted/5">
+          <div className="border border-dashed border-input py-8 px-4 rounded-xl flex flex-col items-center justify-center text-center hover:bg-muted/20 transition-colors cursor-pointer bg-muted/5 relative">
             <Input
-              value={attachments}
               onChange={handleFileChange}
-              className="hidden"
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               id="attachments"
               type="file"
-              multiple
+              accept="image/*"
             />
             <div className="p-3 bg-muted rounded-full mb-3">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-muted-foreground"
-              >
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="17 8 12 3 7 8" />
-                <line x1="12" x2="12" y1="3" y2="15" />
-              </svg>
+              <Sparkles className="w-6 h-6 text-blue-500" />
             </div>
-            <p className="font-medium text-sm">Click to upload image</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              SVG, PNG, JPG or GIF (max. 3MB)
-            </p>
+            {attachments.length > 0 ? (
+              <p className="font-medium text-sm text-green-600">
+                Image Selected for Verification
+              </p>
+            ) : (
+              <>
+                <p className="font-medium text-sm">
+                  Click to upload image for AI Verification
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Supports JPG, PNG (Max 5MB)
+                </p>
+              </>
+            )}
           </div>
-        </Field> */}
+        </Field>
         {/* Switch */}
         <div className="flex items-center justify-between p-4 rounded-xl border bg-muted/30">
           <Label

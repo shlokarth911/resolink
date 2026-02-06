@@ -1,5 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import LandingPage from "./pages/landing/LandingPage";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import OrganisationRegister from "./pages/auth/OrganisationRegister";
@@ -19,6 +20,7 @@ import OrganisationProfile from "./pages/organisation/profile/OrganisationProfil
 const App = () => {
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/org/register" element={<OrganisationRegister />} />

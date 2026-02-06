@@ -45,11 +45,11 @@ const DashBoardStatistics = ({
   return (
     <div className="mt-10">
       <h2 className="text-3xl font-bold tracking-tight mb-6">Statistics</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {issueCount.map((stat, idx) => (
           <Card
             key={idx}
-            className={`relative overflow-hidden border-zinc-800 bg-linear-to-br ${stat.gradient} transition-all duration-300 hover:border-zinc-700 hover:shadow-2xl hover:shadow-black/40 group rounded-4xl outline-none gap-0 py-5`}
+            className={`relative overflow-hidden border-zinc-800 bg-linear-to-br ${stat.gradient} transition-all duration-300 hover:border-zinc-700 hover:shadow-2xl hover:shadow-black/40 hover:scale-105 cursor-pointer group rounded-4xl outline-none gap-0 py-5`}
           >
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors uppercase tracking-wider">

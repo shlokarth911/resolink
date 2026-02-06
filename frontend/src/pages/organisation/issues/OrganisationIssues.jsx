@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
 
 const OrganisationIssues = () => {
   const [issues, setIssues] = useState([]);
@@ -147,6 +148,12 @@ const OrganisationIssues = () => {
         View and track issues reported by the community.
       </p>
 
+      {loading && issues.length === 0 && (
+        <div className="flex h-[50vh] w-full items-center justify-center">
+          <Spinner className="size-10 text-primary" />
+        </div>
+      )}
+
       {/* Filters */}
 
       <div className="mt-5">
@@ -188,7 +195,7 @@ const OrganisationIssues = () => {
         </div>
       </div>
 
-      <div className="mt-5 flex flex-col gap-5 pb-24">
+      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pb-24 max-w-7xl mx-auto">
         {issues.map((issue, index) => {
           if (issues.length === index + 1) {
             return (
@@ -207,7 +214,9 @@ const OrganisationIssues = () => {
           }
         })}
         {loading && (
-          <div className="text-center py-4">Loading more issues...</div>
+          <div className="flex justify-center py-4">
+            <Spinner className="text-primary" />
+          </div>
         )}
         {!hasMore && issues.length > 0 && (
           <div className="text-center py-4 text-muted-foreground">

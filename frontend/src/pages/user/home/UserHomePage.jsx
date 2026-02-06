@@ -7,9 +7,12 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { getIssueFeed } from "../../../services/issue";
 
+import { Spinner } from "@/components/ui/spinner";
+
 const UserHomePage = () => {
   const [name, setname] = useState("");
   const [issues, setIssues] = useState([]);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -39,6 +42,7 @@ const UserHomePage = () => {
       console.log(error);
     } finally {
       setLoading(false);
+      setInitialLoading(false);
     }
   };
 
@@ -48,15 +52,23 @@ const UserHomePage = () => {
   }, []);
 
   return (
-    <div className="p-5 max-w-4xl mx-auto space-y-8">
-      <HomePageHeader name={name} />
-      <PrimaryCallToActions />
-      <RecentIssues
-        issues={issues}
-        fetchMore={fetchIssueFeed}
-        hasMore={hasMore}
-        loading={loading}
-      />
+    <div className="p-5 max-w-7xl mx-auto space-y-8">
+      {initialLoading ? (
+        <div className="flex h-[80vh] w-full items-center justify-center">
+          <Spinner className="size-10 text-primary" />
+        </div>
+      ) : (
+        <>
+          <HomePageHeader name={name} />
+          <PrimaryCallToActions />
+          <RecentIssues
+            issues={issues}
+            fetchMore={fetchIssueFeed}
+            hasMore={hasMore}
+            loading={loading}
+          />
+        </>
+      )}
     </div>
   );
 };

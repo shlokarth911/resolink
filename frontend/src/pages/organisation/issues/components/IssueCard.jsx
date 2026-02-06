@@ -42,7 +42,7 @@ const IssueCard = ({ issue, setSelectedIssue }) => {
   return (
     <div
       onClick={() => setSelectedIssue(issue)}
-      className="group relative border border-neutral-800 bg-neutral-900/40 backdrop-blur-md rounded-3xl p-5 cursor-pointer hover:border-neutral-700 hover:bg-neutral-900/60 transition-all duration-300 overflow-hidden"
+      className="group relative border border-neutral-800 bg-neutral-900/40 backdrop-blur-md rounded-3xl p-5 md:p-6 cursor-pointer hover:border-neutral-700 hover:bg-neutral-900/60 hover:scale-[1.02] transition-all duration-300 overflow-hidden"
     >
       <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
         <ArrowUpRight className="text-neutral-500" size={20} />
@@ -87,8 +87,8 @@ const IssueCard = ({ issue, setSelectedIssue }) => {
         </div>
       )}
 
-      <div className="mt-5 flex items-center justify-between pt-4 border-t border-neutral-800/50">
-        <div className="flex items-center gap-4 text-xs text-neutral-500">
+      <div className="mt-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t border-neutral-800/50">
+        <div className="flex flex-wrap items-center gap-4 text-xs text-neutral-500">
           <div className="flex items-center gap-1.5">
             <MapPin size={14} />
             <span className="max-w-[100px] truncate">

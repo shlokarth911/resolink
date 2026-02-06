@@ -7,18 +7,26 @@ import { getUserIssues } from "../../../services/issue";
 import IssueDetails from "./components/IssueDetails";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { Spinner } from "@/components/ui/spinner";
 
 const UserIssues = () => {
   const [issues, setIssues] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState({});
+  const [loading, setLoading] = useState(true);
   const containerRef = useRef(null);
   const mainScreenRef = useRef(null);
 
   const navigate = useNavigate();
 
   const fetchIssues = async () => {
-    const issues = await getUserIssues();
-    setIssues(issues);
+    try {
+      const issues = await getUserIssues();
+      setIssues(issues);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -73,7 +81,7 @@ const UserIssues = () => {
   };
 
   return (
-    <div className="p-5 max-w-4xl mx-auto">
+    <div className="p-5 max-w-7xl mx-auto">
       <div ref={mainScreenRef}>
         <div>
           <Button variant="ghost" onClick={() => navigate("/user/home")}>
@@ -89,15 +97,22 @@ const UserIssues = () => {
             View and track issues reported by the community.
           </p>
         </div>
-        <div className="mt-5 flex flex-col gap-5 pb-24">
-          {issues.map((issue) => (
-            <IssueCard
-              key={issue._id}
-              issue={issue}
-              setSelectedIssue={setSelectedIssue}
-            />
-          ))}
-        </div>
+
+        {loading ? (
+          <div className="flex h-[50vh] w-full items-center justify-center">
+            <Spinner className="size-10 text-primary" />
+          </div>
+        ) : (
+          <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pb-24">
+            {issues.map((issue) => (
+              <IssueCard
+                key={issue._id}
+                issue={issue}
+                setSelectedIssue={setSelectedIssue}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {selectedIssue._id && (

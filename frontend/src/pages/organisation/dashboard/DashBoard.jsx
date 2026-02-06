@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Spinner } from "@/components/ui/spinner";
 import DashBoardHeader from "./components/DashBoardHeader";
 import DashBoardStatistics from "./components/DashBoardStatistics";
 import TopIssues from "./components/TopIssues";
@@ -15,6 +16,7 @@ const DashBoard = () => {
   const [openIssues, setOpenIssues] = useState(0);
   const [inProgressIssues, setInProgressIssues] = useState(0);
   const [resolvedIssues, setResolvedIssues] = useState(0);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -28,6 +30,8 @@ const DashBoard = () => {
       setResolvedIssues(issues?.resolvedIssues);
     } catch (error) {
       console.log(error);
+    } finally {
+      setInitialLoading(false);
     }
   };
 
@@ -36,30 +40,38 @@ const DashBoard = () => {
   }, []);
 
   return (
-    <div className="p-4">
+    <div className="p-4 max-w-7xl mx-auto">
       <DashBoardHeader />
-      <DashBoardStatistics
-        totalIssues={totalIssues}
-        openIssues={openIssues}
-        inProgressIssues={inProgressIssues}
-        resolvedIssues={resolvedIssues}
-      />
+      {initialLoading ? (
+        <div className="flex h-[50vh] w-full items-center justify-center">
+          <Spinner className="size-10 text-primary" />
+        </div>
+      ) : (
+        <>
+          <DashBoardStatistics
+            totalIssues={totalIssues}
+            openIssues={openIssues}
+            inProgressIssues={inProgressIssues}
+            resolvedIssues={resolvedIssues}
+          />
 
-      <div className="mt-10 grid grid-cols-2 gap-4">
-        <Button className="text-base p-6 rounded-2xl">
-          <Link to="/org/issues" className="w-full ">
-            Browse All Issues
-          </Link>
-        </Button>
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Button className="text-base p-6 rounded-2xl">
+              <Link to="/org/issues" className="w-full ">
+                Browse All Issues
+              </Link>
+            </Button>
 
-        <Button className="text-base p-6 rounded-2xl" variant="outline">
-          <Link to="/org/analysis" className="w-full ">
-            AI Analysis
-          </Link>
-        </Button>
-      </div>
+            <Button className="text-base p-6 rounded-2xl" variant="outline">
+              <Link to="/org/analysis" className="w-full ">
+                AI Analysis
+              </Link>
+            </Button>
+          </div>
 
-      <TopIssues issues={highPriorityIssues} />
+          <TopIssues issues={highPriorityIssues} />
+        </>
+      )}
     </div>
   );
 };

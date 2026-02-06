@@ -107,7 +107,7 @@ const IssueDetails = ({ issue, setIsModalOpen }) => {
       </div>
 
       {/* Solutions Grid */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Immediate Actions */}
         <div className="space-y-3">
           <h3 className="flex items-center gap-2 text-sm font-semibold text-emerald-400 uppercase tracking-wider">
@@ -148,7 +148,7 @@ const IssueDetails = ({ issue, setIsModalOpen }) => {
       </div>
 
       {/* Metadata Footer */}
-      <div className="grid grid-cols-2 gap-4 pt-4 border-t border-neutral-800">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-neutral-800">
         <div className="space-y-1">
           <span className="text-xs text-neutral-500 uppercase tracking-widest font-medium">
             Responsible Entity

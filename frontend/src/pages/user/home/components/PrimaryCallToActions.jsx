@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const PrimaryCallToActions = () => {
   return (
-    <div className="mt-10 grid grid-cols-2 gap-4">
+    <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-4">
       <Button className="text-base p-6 rounded-2xl">
         <Link to="/user/report" className="w-full ">
           Report an Issue

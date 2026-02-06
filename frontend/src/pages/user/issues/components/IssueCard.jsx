@@ -43,7 +43,7 @@ const IssueCard = ({ issue, setSelectedIssue }) => {
   return (
     <div
       onClick={() => setSelectedIssue(issue)}
-      className="group relative border border-neutral-800 bg-neutral-900/40 backdrop-blur-md rounded-3xl p-5 cursor-pointer hover:border-neutral-700 hover:bg-neutral-900/60 transition-all duration-300 overflow-hidden"
+      className="group relative border border-neutral-800 bg-neutral-900/40 backdrop-blur-md rounded-3xl p-5 md:p-6 cursor-pointer hover:border-neutral-700 hover:bg-neutral-900/60 hover:scale-[1.02] transition-all duration-300 overflow-hidden"
     >
       <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
         <ArrowUpRight className="text-neutral-500" size={20} />

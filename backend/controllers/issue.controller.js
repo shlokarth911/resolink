@@ -357,6 +357,16 @@ module.exports.getIssueCount = async (req, res) => {
       status: "resolved",
     });
 
+    const verifiedCount = await Issue.countDocuments({
+      organisation: organisation._id,
+      "verificationResult.isLegitimate": true,
+    });
+
+    const flaggedCount = await Issue.countDocuments({
+      organisation: organisation._id,
+      "verificationResult.isLegitimate": false,
+    });
+
     return res.status(200).json({
       success: true,
       message: "Issue count fetched successfully",
@@ -364,6 +374,8 @@ module.exports.getIssueCount = async (req, res) => {
       openIssues,
       inProgressIssues,
       resolvedIssues,
+      verifiedCount,
+      flaggedCount,
     });
   } catch (error) {
     return res.status(500).json({

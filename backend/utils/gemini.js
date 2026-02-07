@@ -46,7 +46,7 @@ const path = require("path");
 const os = require("os");
 
 const verifyIssueImage = async (imageBuffer, mimeType = "image/jpeg") => {
-  const model = "gemini-1.5-flash"; // Using a known valid model, user can change if needed
+  const model = "gemini-3-flash-preview"; // Using a known valid model, user can change if needed
 
   // 1. Create a temporary file
   const tempFilePath = path.join(os.tmpdir(), `upload_${Date.now()}.jpg`);
@@ -99,14 +99,19 @@ const verifyIssueImage = async (imageBuffer, mimeType = "image/jpeg") => {
 
     console.log("Gemini Raw Result:", JSON.stringify(result, null, 2));
 
-    const text = result?.response?.text();
+    const candidateText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+    const text =
+      candidateText ||
+      (typeof result?.text === "function" ? result.text() : result?.text);
 
     if (!text) {
       console.warn("Gemini returned empty response for verification.");
       return { isLegitimate: false, reasoning: "AI failed to analyze image." };
     }
 
-    const jsonStr = text.replace(/```json|```/g, "").trim();
+    // specific robust JSON extraction
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    const jsonStr = jsonMatch ? jsonMatch[0] : text;
 
     try {
       return JSON.parse(jsonStr);

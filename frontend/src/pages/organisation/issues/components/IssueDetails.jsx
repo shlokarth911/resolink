@@ -9,6 +9,11 @@ import {
   Building2,
   ArrowRight,
   TrendingUp,
+  ShieldCheck,
+  ShieldAlert,
+  HardHat,
+  Coins,
+  Activity,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +24,7 @@ import {
   FieldTitle,
 } from "@/components/ui/field";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Badge } from "@/components/ui/badge";
 
 const IssueDetails = ({ issue, setIsModalOpen }) => {
   const calculatePostedAgo = (dateString) => {
@@ -105,6 +111,102 @@ const IssueDetails = ({ issue, setIsModalOpen }) => {
           </p>
         </div>
       </div>
+
+      {issue.verificationResult && (
+        <div className="rounded-2xl border border-neutral-800 bg-neutral-900/30 p-6 space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="flex items-center gap-2 text-white font-semibold">
+              <ShieldCheck size={20} className="text-emerald-500" />
+              AI Image Verification
+            </h2>
+            <Badge
+              className={`${
+                issue.verificationResult.isLegitimate
+                  ? "bg-emerald-500/20 text-emerald-400"
+                  : "bg-red-500/20 text-red-400"
+              } border-0`}
+            >
+              {issue.verificationResult.isLegitimate ? "LEGITIMATE" : "FLAGGED"}
+            </Badge>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="p-4 rounded-xl bg-neutral-800/40 border border-neutral-700/30">
+              <div className="flex items-center gap-2 text-neutral-500 text-xs font-medium mb-1 uppercase tracking-wider">
+                <Activity size={14} />
+                Damage Type
+              </div>
+              <p className="text-sm font-semibold text-neutral-200">
+                {issue.verificationResult.damageType || "N/A"}
+              </p>
+            </div>
+
+            <div className="p-4 rounded-xl bg-neutral-800/40 border border-neutral-700/30">
+              <div className="flex items-center gap-2 text-neutral-500 text-xs font-medium mb-1 uppercase tracking-wider">
+                <TrendingUp size={14} />
+                Severity
+              </div>
+              <div className="flex items-end gap-1">
+                <p className="text-lg font-bold text-neutral-200">
+                  {issue.verificationResult.severity}
+                </p>
+                <p className="text-xs text-neutral-500 mb-1">/ 10</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-neutral-800/40 border border-neutral-700/30">
+              <div className="flex items-center gap-2 text-neutral-500 text-xs font-medium mb-1 uppercase tracking-wider">
+                <Coins size={14} />
+                Est. Cost
+              </div>
+              <p className="text-sm font-semibold text-neutral-200">
+                {issue.verificationResult.repairCostEstimate ||
+                  "Calculated by AI..."}
+              </p>
+            </div>
+
+            <div className="p-4 rounded-xl bg-neutral-800/40 border border-neutral-700/30">
+              <div className="flex items-center gap-2 text-neutral-500 text-xs font-medium mb-1 uppercase tracking-wider">
+                <HardHat size={14} />
+                Risk Level
+              </div>
+              <p
+                className={`text-sm font-semibold ${
+                  issue.verificationResult.severity >= 7
+                    ? "text-orange-400"
+                    : "text-neutral-200"
+                }`}
+              >
+                {issue.verificationResult.severity >= 8
+                  ? "CRITICAL"
+                  : issue.verificationResult.severity >= 5
+                    ? "ELEVATED"
+                    : "LOW"}
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="p-4 rounded-xl bg-orange-500/5 border border-orange-500/10">
+              <h3 className="flex items-center gap-2 text-xs font-semibold text-orange-400 uppercase tracking-widest mb-2">
+                <ShieldAlert size={14} /> Safety Risk Profile
+              </h3>
+              <p className="text-sm text-neutral-300 leading-relaxed">
+                {issue.verificationResult.safetyRisk}
+              </p>
+            </div>
+
+            <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/10">
+              <h3 className="flex items-center gap-2 text-xs font-semibold text-blue-400 uppercase tracking-widest mb-2">
+                <Sparkles size={14} /> AI Reasoning
+              </h3>
+              <p className="text-sm text-neutral-300 leading-relaxed italic">
+                "{issue.verificationResult.reasoning}"
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Solutions Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

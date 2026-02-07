@@ -16,6 +16,8 @@ const DashBoard = () => {
   const [openIssues, setOpenIssues] = useState(0);
   const [inProgressIssues, setInProgressIssues] = useState(0);
   const [resolvedIssues, setResolvedIssues] = useState(0);
+  const [verifiedIssues, setVerifiedIssues] = useState(0);
+  const [flaggedIssues, setFlaggedIssues] = useState(0);
   const [initialLoading, setInitialLoading] = useState(true);
 
   const navigate = useNavigate();
@@ -28,6 +30,8 @@ const DashBoard = () => {
       setOpenIssues(issues?.openIssues);
       setInProgressIssues(issues?.inProgressIssues);
       setResolvedIssues(issues?.resolvedIssues);
+      setVerifiedIssues(issues?.verifiedCount);
+      setFlaggedIssues(issues?.flaggedCount);
     } catch (error) {
       console.log(error);
     } finally {
@@ -53,6 +57,8 @@ const DashBoard = () => {
             openIssues={openIssues}
             inProgressIssues={inProgressIssues}
             resolvedIssues={resolvedIssues}
+            verifiedIssues={verifiedIssues}
+            flaggedIssues={flaggedIssues}
           />
 
           <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-4">

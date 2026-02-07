@@ -5,6 +5,8 @@ import {
   Sparkles,
   AlertTriangle,
   ArrowUpRight,
+  CheckCircle2,
+  AlertCircle,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -62,6 +64,33 @@ const IssueCard = ({ issue, setSelectedIssue }) => {
           >
             {issue.category}
           </Badge>
+          {issue.verificationResult && (
+            <Badge
+              variant="outline"
+              className={`${
+                issue.verificationResult.isLegitimate
+                  ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                  : "bg-red-500/10 text-red-500 border-red-500/20"
+              } border-0 flex items-center gap-1`}
+            >
+              {issue.verificationResult.isLegitimate ? (
+                <CheckCircle2 size={12} />
+              ) : (
+                <AlertCircle size={12} />
+              )}
+              {issue.verificationResult.isLegitimate
+                ? "AI Verified"
+                : "AI Flagged"}
+            </Badge>
+          )}
+          {issue.verificationResult?.severity && (
+            <Badge
+              variant="outline"
+              className="bg-neutral-800 text-neutral-300 font-normal border-0"
+            >
+              Severity: {issue.verificationResult.severity}/10
+            </Badge>
+          )}
         </div>
       </div>
 

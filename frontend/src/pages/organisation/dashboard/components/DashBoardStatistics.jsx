@@ -7,13 +7,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CheckCircle, CircleAlert, Clock, TableCellsSplit } from "lucide-react";
+import {
+  CheckCircle,
+  CircleAlert,
+  Clock,
+  TableCellsSplit,
+  ShieldCheck,
+  ShieldAlert,
+} from "lucide-react";
 
 const DashBoardStatistics = ({
   totalIssues,
   openIssues,
   inProgressIssues,
   resolvedIssues,
+  verifiedIssues,
+  flaggedIssues,
 }) => {
   const issueCount = [
     {
@@ -40,12 +49,24 @@ const DashBoardStatistics = ({
       icon: <CheckCircle className="w-5 h-5 text-emerald-400" />,
       gradient: "from-zinc-900 to-zinc-800/50",
     },
+    {
+      title: "Verified BY AI",
+      value: verifiedIssues,
+      icon: <ShieldCheck className="w-5 h-5 text-emerald-500" />,
+      gradient: "from-zinc-900 to-zinc-800/50",
+    },
+    {
+      title: "Flagged BY AI",
+      value: flaggedIssues,
+      icon: <ShieldAlert className="w-5 h-5 text-red-500" />,
+      gradient: "from-zinc-900 to-zinc-800/50",
+    },
   ];
 
   return (
     <div className="mt-10">
       <h2 className="text-3xl font-bold tracking-tight mb-6">Statistics</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {issueCount.map((stat, idx) => (
           <Card
             key={idx}
